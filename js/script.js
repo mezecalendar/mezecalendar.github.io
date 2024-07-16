@@ -17,42 +17,12 @@ document.addEventListener('DOMContentLoaded', function () {
         return data.map(row => ({
             id: row['id'] || row['title'] + row['start'], // Unique identifier
             title: row['title'],
-            start: moment(row['start'], 'YYYY-MM-DDTHH:mm:ss').toDate(),
-            end: moment(row['end'], 'YYYY-MM-DDTHH:mm:ss').toDate(),
+            start: moment.tz(row['start'], 'YYYY-MM-DDTHH:mm:ss', 'CET').toDate(),
+            end: moment.tz(row['end'], 'YYYY-MM-DDTHH:mm:ss', 'CET').toDate(),
             description: row['description']
         }));
     }
     
-
-    function parseCSV(csvText) {
-        const lines = csvText.split('\n');
-        const headers = lines[0].split(',');
-        const events = [];
-
-        for (let i = 1; i < lines.length; i++) {
-            const row = lines[i].split(',');
-
-            if (row.length < headers.length) {
-                continue; // Skip rows with missing values
-            }
-
-            const event = {};
-            headers.forEach((header, index) => {
-                event[header.trim()] = row[index].trim();
-            });
-
-            // Ensure the event has all necessary properties
-            event.title = event.title || 'No Title';
-            event.start = event.start || new Date().toISOString();
-            event.end = event.end || new Date().toISOString();
-            event.description = event.description || 'No Description';
-
-            events.push(event);
-        }
-
-        return events;
-    }
-
     function updateEventTimes(events, targetTimezone) {
         return events.map(event => {
             const updatedEvent = { ...event };
@@ -84,8 +54,6 @@ document.addEventListener('DOMContentLoaded', function () {
             currentTimezone = this.value;
             updateCalendarEvents();
         });
-
-       
     }
 
     function updateCalendarEvents() {
@@ -101,20 +69,17 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function openModal(event) {
-    
         if (event && event.start && event.end) {
             const eventDate = moment.tz(event.start, currentTimezone).format('YYYY-MM-DD');
             eventsOfTheDay = eventList.filter(e => moment.tz(e.start, currentTimezone).format('YYYY-MM-DD') === eventDate);
             currentEventIndex = eventsOfTheDay.findIndex(e => e.id === event.id);
-    
+
             updateModalContent(eventsOfTheDay[currentEventIndex]);
             document.getElementById('eventModal').style.display = 'block';
         } else {
             console.error('Invalid event object:', event); // Log the invalid event object
         }
     }
-    
-    
 
     function closeModal() {
         document.getElementById('eventModal').style.display = 'none';
@@ -124,18 +89,17 @@ document.addEventListener('DOMContentLoaded', function () {
         currentEventIndex = (currentEventIndex - 1 + eventsOfTheDay.length) % eventsOfTheDay.length;
         updateModalContent(eventsOfTheDay[currentEventIndex]);
     }
-    
+
     function nextEvent() {
         currentEventIndex = (currentEventIndex + 1) % eventsOfTheDay.length;
         updateModalContent(eventsOfTheDay[currentEventIndex]);
     }
-    
 
     function updateModalContent(event) {
         if (event && event.start && event.end) {
             const startTime = moment.tz(event.start, currentTimezone).format('hh:mm A');
             const endTime = moment.tz(event.end, currentTimezone).format('hh:mm A');
-            document.getElementById('eventDate').innerText = `Events on ${event.start.toDateString()}`;
+            document.getElementById('eventDate').innerText = `Events on ${moment.tz(event.start, currentTimezone).format('YYYY-MM-DD')}`;
             document.getElementById('modalTitle').innerText = event.title || 'No Title';
             document.getElementById('modalDescription').innerText = `Description: ${event.description || 'No Description'}`;
             document.getElementById('modalTime').innerText = `Time: ${startTime} - ${endTime}`;
@@ -147,8 +111,7 @@ document.addEventListener('DOMContentLoaded', function () {
             document.getElementById('modalTime').innerText = 'No Time';
         }
     }
-    
-    
+
     function initCalendar(events) {
         eventList = events.map(event => ({
             ...event,
@@ -235,7 +198,6 @@ document.addEventListener('DOMContentLoaded', function () {
         const upcomingEvents = eventList.filter(event => moment.tz(event.start, currentTimezone).isAfter(now));
         upcomingEvents.sort((a, b) => moment.tz(a.start, currentTimezone).diff(moment.tz(b.start, currentTimezone)));
 
-
         updateUpcomingEventItem(upcomingEvents[0], 1);
         updateUpcomingEventItem(upcomingEvents[1], 2);
     }
@@ -276,7 +238,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     fetchEvents().then(events => {
-        eventList = events;
+        originalEvents = events; // Store the original events
         const updatedEvents = updateEventTimes(events, currentTimezone);
         initCalendar(updatedEvents);
         initTimezoneSelector();
