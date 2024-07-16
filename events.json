@@ -164,8 +164,8 @@
     {
         "id": "17",
         "title": "Rock Concert",
-        "start": "2024-07-16T6:00:00",
-        "end": "2024-07-16T7:00:00",
+        "start": "2024-07-16T06:00:00",
+        "end": "2024-07-16T07:00:00",
         "extendedProps": {
             "description": "Enjoy a live performance by a famous rock band."
         }
