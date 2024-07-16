@@ -193,16 +193,16 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function updateUpcomingEventItem(event, index) {
         if (event) {
-            const startTime = moment.tz(event.start, currentTimezone).format('YYYY-MM-DD hh:mm A');
+            const startDateTime = moment.tz(event.start, currentTimezone).format('YYYY-MM-DD');
+            const startTime = moment.tz(event.start, currentTimezone).format('hh:mm A');
             const endTime = moment.tz(event.end, currentTimezone).format('hh:mm A');
-            const eventDate = moment.tz(event.start, currentTimezone).format('YYYY-MM-DD');
-    
+     
             updateCountdown(event, index);
-    
+     
             document.getElementById(`upcomingEventTitle${index}`).innerText = event.title || 'No upcoming event';
             document.getElementById(`upcomingEventDescription${index}`).innerText = ` ${event.extendedProps?.description || 'N/A'}`;
-            document.getElementById(`upcomingEventTime${index}`).innerText = `${startTime} - ${endTime}`;
-            document.getElementById(`upcomingEventDate${index}`).innerText = `${eventDate}`;
+            document.getElementById(`upcomingEventTime${index}`).innerText = ` ${startTime} - ${endTime}`;
+            document.getElementById(`upcomingEventDate${index}`).innerText = ` ${startDateTime}`;
         } else {
             document.getElementById(`upcomingEventTitle${index}`).innerText = 'No upcoming event';
             document.getElementById(`upcomingEventDescription${index}`).innerText = 'N/A';
@@ -211,6 +211,7 @@ document.addEventListener('DOMContentLoaded', function () {
             document.getElementById(`upcomingEventCountdown${index}`).innerText = 'N/A';
         }
     }
+    
     
 
     function updateCountdown(event, index) {
