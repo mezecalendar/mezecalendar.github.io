@@ -1,20 +1,20 @@
 [
     {
         "id": "1",
-        "title": "A Giant Dragon Invades!",
+        "title": "Raviente 99x Rewards Event",
         "start": "2024-07-01T00:00:00",
-        "end": "2024-07-01T01:00:00",
+        "end": "2024-07-01T00:00:00",
         "extendedProps": {
-            "description": "Defend the village from the dragon!"
+            "description": "Raviente Event with Double Rewards, join for extra drops of Raviente Rubies, Sapphires, Divine Power Gems, and Black Raviente Materials!"
         }
     },
-     {
+    {
         "id": "2",
         "title": "Raviente 99x Rewards Event",
         "start": "2024-07-27T00:00:00",
         "end": "2024-07-27T00:00:00",
         "extendedProps": {
-            "description": "Raviente Event with Double Rewards, join for extra drops of Raviente Rubies, Sapphires, Divine Power Gems, and Black Raviente Materials"
+            "description": "Raviente Event with Double Rewards, join for extra drops of Raviente Rubies, Sapphires, Divine Power Gems, and Black Raviente Materials!"
         }
     }
    
