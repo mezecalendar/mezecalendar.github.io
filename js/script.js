@@ -135,7 +135,7 @@ document.addEventListener('DOMContentLoaded', function () {
         if (event && event.start && event.end) {
             const startTime = moment.tz(event.start, currentTimezone).format('hh:mm A');
             const endTime = moment.tz(event.end, currentTimezone).format('hh:mm A');
-            document.getElementById('eventDate').innerText = `Events on ${moment.tz(event.start, currentTimezone).format('YYYY-MM-DD')}`;
+            document.getElementById('eventDate').innerText = `Events on ${event.start.toDateString()}`;
             document.getElementById('modalTitle').innerText = event.title || 'No Title';
             document.getElementById('modalDescription').innerText = `Description: ${event.description || 'No Description'}`;
             document.getElementById('modalTime').innerText = `Time: ${startTime} - ${endTime}`;
