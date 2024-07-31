@@ -1,11 +1,18 @@
 document.addEventListener('DOMContentLoaded', function () {
     const calendarEl = document.getElementById('calendar');
     const timezoneSelect = document.getElementById('timezone');
+    const timezoneButton = document.getElementById('timezoneButton');
+    const timezoneContainer = document.getElementById('timezoneContainer');
 
     let eventList = [];
     let originalEvents = [];
     let currentTimezone = 'CET';
     let calendar;
+
+    timezoneButton.addEventListener('click', function() {
+        timezoneContainer.classList.toggle('active');
+        timezoneButton.style.display = timezoneContainer.classList.contains('active') ? 'none' : 'block';
+    });
 
     async function fetchEvents() {
         const response = await fetch('https://docs.google.com/spreadsheets/d/e/2PACX-1vTdJN88ly1PXVRE_34BdmoBl3loB9FiJWdWTeS8_ZQiGrJc-gIABBw9K0fvv1VwOw9vwnWoInc_eAay/pub?gid=0&single=true&output=csv');
@@ -62,7 +69,7 @@ document.addEventListener('DOMContentLoaded', function () {
         initCalendar(updatedEvents);
 
         calendar.changeView(currentView, currentDate); // Preserve the view and date
-        checkCurrentEvent();
+        updateCurrentEvents();
         updateUpcomingEvents();
     }
 
@@ -90,12 +97,8 @@ document.addEventListener('DOMContentLoaded', function () {
                 openModal(info.event);
             },
             eventContent: function (arg) {
-                const startTime = moment.tz(arg.event.start, currentTimezone).format('hh:mm A');
-                const endTime = moment.tz(arg.event.end, currentTimezone).format('hh:mm A');
-
                 return {
-                    html: `<div class="fc-event-time">${startTime} - ${endTime}</div>
-                           <div class="fc-event-title" style="background-color: #7030a0; color: #fff; padding: 2px 5px; border-radius: 3px; border: 1px solid #7030a0;">${arg.event.title}</div>`
+                    html: `<div class="fc-event-title" style="background-color: #7030a0; color: #fff; padding: 2px 5px; border-radius: 3px; border: 1px solid #7030a0;">${arg.event.title}</div>`
                 };
             }
         });
