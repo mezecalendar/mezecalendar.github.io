@@ -20,7 +20,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const data = Papa.parse(text, { header: true, skipEmptyLines: true }).data;
 
         return data.map(row => ({
-            id: row['id'] || row['title'] + row['start'], // Unique identifier
+            id: row['id'] || row['title'] + row['start'],
             title: row['title'],
             start: moment.tz(row['start'], 'YYYY-MM-DDTHH:mm:ss', 'CET').toDate(),
             end: moment.tz(row['end'], 'YYYY-MM-DDTHH:mm:ss', 'CET').toDate(),
@@ -40,12 +40,11 @@ document.addEventListener('DOMContentLoaded', function () {
     function initTimezoneSelector() {
         const timezones = moment.tz.names();
 
-        // Add CET at the top of the dropdown
         const cetOption = new Option('CET', 'CET', true, true);
         timezoneSelect.add(cetOption);
 
         timezones.forEach(tz => {
-            if (tz !== 'CET') { // Ensure CET is not added twice
+            if (tz !== 'CET') {
                 const option = new Option(tz, tz);
                 timezoneSelect.add(option);
             }
@@ -63,12 +62,12 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function updateCalendarEvents() {
         const updatedEvents = updateEventTimes(originalEvents, currentTimezone);
-        const currentView = calendar.view.type; // Get current view type
-        const currentDate = calendar.getDate(); // Get current date
+        const currentView = calendar.view.type;
+        const currentDate = calendar.getDate();
 
         initCalendar(updatedEvents);
 
-        calendar.changeView(currentView, currentDate); // Preserve the view and date
+        calendar.changeView(currentView, currentDate);
         updateCurrentEvents();
         updateUpcomingEvents();
     }
@@ -81,7 +80,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }));
 
         if (calendar) {
-            calendar.destroy(); // Destroy the previous calendar instance
+            calendar.destroy();
         }
 
         calendar = new FullCalendar.Calendar(calendarEl, {
@@ -108,45 +107,15 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function openModal(event) {
         if (event && event.start && event.end) {
-            const eventDate = moment.tz(event.start, currentTimezone).format('YYYY-MM-DD');
-            eventsOfTheDay = eventList.filter(e => moment.tz(e.start, currentTimezone).format('YYYY-MM-DD') === eventDate);
-            currentEventIndex = eventsOfTheDay.findIndex(e => e.id === event.id);
-
-            updateModalContent(eventsOfTheDay[currentEventIndex]);
-            document.getElementById('eventModal').style.display = 'block';
-        } else {
-            console.error('Invalid event object:', event); // Log the invalid event object
-        }
-    }
-
-    function closeModal() {
-        document.getElementById('eventModal').style.display = 'none';
-    }
-
-    function prevEvent() {
-        currentEventIndex = (currentEventIndex - 1 + eventsOfTheDay.length) % eventsOfTheDay.length;
-        updateModalContent(eventsOfTheDay[currentEventIndex]);
-    }
-
-    function nextEvent() {
-        currentEventIndex = (currentEventIndex + 1) % eventsOfTheDay.length;
-        updateModalContent(eventsOfTheDay[currentEventIndex]);
-    }
-
-    function updateModalContent(event) {
-        if (event && event.start && event.end) {
             const startTime = moment.tz(event.start, currentTimezone).format('hh:mm A');
             const endTime = moment.tz(event.end, currentTimezone).format('hh:mm A');
-            document.getElementById('eventDate').innerText = `Events on ${moment.tz(event.start, currentTimezone).format('YYYY-MM-DD')}`;
-            document.getElementById('modalTitle').innerText = event.title || 'No Title';
-            document.getElementById('modalDescription').innerText = `Description: ${event.description || 'No Description'}`;
+            document.getElementById('infoModalLabel').innerText = event.title || 'No Title';
+            document.getElementById('modalDescription').innerText = event.description || 'No Description';
             document.getElementById('modalTime').innerText = `Time: ${startTime} - ${endTime}`;
+            const infoModal = new bootstrap.Modal(document.getElementById('infoModal'));
+            infoModal.show();
         } else {
-            console.error('Invalid event object:', event); // Debugging line
-            document.getElementById('eventDate').innerText = 'No Event';
-            document.getElementById('modalTitle').innerText = 'No Title';
-            document.getElementById('modalDescription').innerText = 'No Description';
-            document.getElementById('modalTime').innerText = 'No Time';
+            console.error('Invalid event object:', event);
         }
     }
 
@@ -184,14 +153,13 @@ document.addEventListener('DOMContentLoaded', function () {
         const upcomingEvents = eventList.filter(event => moment.tz(event.start, currentTimezone).isAfter(now));
         upcomingEvents.sort((a, b) => moment.tz(a.start, currentTimezone).diff(moment.tz(b.start, currentTimezone)));
 
-        updateUpcomingEventItems(upcomingEvents.slice(0, 2)); // Show the first two upcoming events
+        updateUpcomingEventItems(upcomingEvents.slice(0, 2));
     }
 
     function updateUpcomingEventItems(events) {
         events.forEach((event, index) => {
             updateUpcomingEventItem(event, index + 1);
         });
-        // Clear remaining event slots if there are less than 2 events
         for (let i = events.length + 1; i <= 2; i++) {
             updateUpcomingEventItem(null, i);
         }
@@ -233,17 +201,13 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     fetchEvents().then(events => {
-        originalEvents = events; // Store the original events
+        originalEvents = events;
         const updatedEvents = updateEventTimes(events, currentTimezone);
         initCalendar(updatedEvents);
         initTimezoneSelector();
         updateCurrentEvents();
         updateUpcomingEvents();
     });
-
-    window.closeModal = closeModal;
-    window.prevEvent = prevEvent;
-    window.nextEvent = nextEvent;
 
     setInterval(updateCurrentEvents, 60000);
     setInterval(updateUpcomingEvents, 60000);
