@@ -84,18 +84,14 @@
         }
     </style>
     <script>
-        // JavaScript to handle button click
-        document.getElementById('timezoneButton').addEventListener('click', function() {
-            var timezoneContainer = document.getElementById('timezoneContainer');
-            var button = document.getElementById('timezoneButton');
+        document.addEventListener('DOMContentLoaded', function() {
+            const timezoneButton = document.getElementById('timezoneButton');
+            const timezoneContainer = document.getElementById('timezoneContainer');
 
-            if (timezoneContainer.classList.contains('active')) {
-                timezoneContainer.classList.remove('active');
-                button.style.display = 'block';
-            } else {
-                timezoneContainer.classList.add('active');
-                button.style.display = 'none';
-            }
+            timezoneButton.addEventListener('click', function() {
+                timezoneContainer.classList.toggle('active');
+                timezoneButton.style.display = timezoneContainer.classList.contains('active') ? 'none' : 'block';
+            });
         });
     </script>
 </head>
@@ -149,7 +145,6 @@
         <button onclick="nextEvent()">Next</button>
     </div>
     <script>
-        // JavaScript to handle button click
         document.getElementById('timezoneButton').addEventListener('click', function() {
             var timezoneContainer = document.getElementById('timezoneContainer');
             var button = document.getElementById('timezoneButton');
