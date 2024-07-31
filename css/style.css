@@ -19,6 +19,7 @@ body {
     justify-content: space-between;
     width: 100%;
 }
+
 #calendar {
     background-color: #fff;
     padding: 20px;
@@ -26,21 +27,26 @@ body {
     margin-bottom: 20px;
     height: fit-content;
 }
+
 #currentEvent {
     border-radius: 15px;
 }
+
 #upcomingEvents {
     border-radius: 15px;
 }
+
 #calendarContainer {
     flex-grow: 1;
     margin-right: 20px;
     width: 700px;
     box-sizing: border-box;
 }
+
 #timezone {
     border-radius: 15px;
 }
+
 #timezoneContainer {
     color: #fff;
     text-align: center;
@@ -138,19 +144,24 @@ body {
         text-align: center;
         font-size: 18px;
     }
+
     .fc .fc-list-day-cushion, .fc .fc-list-table td {
         font-size: 12px;
         padding: 10px;
     }
+
     #currentEvent h2 {
         text-align: center;
     }
+
     #upcomingEvents h2 {
         text-align: center;
     }
+
     #upcomingEvents {
         margin-bottom: 20px;
     }
+
     #currentEventContainer {
         width: 100% !important;
     }
@@ -306,4 +317,24 @@ body {
 /* Style for the current day highlight */
 .fc .fc-daygrid-day.fc-day-today {
     background-color: #ecccf8;
+}
+
+/* Style for events in calendar cells */
+.fc .fc-daygrid-event {
+    background-color: #7030a0;
+    color: #fff;
+    border: 1px solid #7030a0;
+    border-radius: 3px;
+    padding: 2px 5px;
+    white-space: normal;
+    word-wrap: break-word;
+}
+
+/* Style for events in list view */
+.fc .fc-list-event {
+    background-color: #7030a0;
+    color: #fff;
+    border: 1px solid #7030a0;
+    border-radius: 3px;
+    padding: 2px 5px;
 }
