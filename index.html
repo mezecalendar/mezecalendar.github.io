@@ -151,4 +151,12 @@
 
             if (timezoneContainer.classList.contains('active')) {
                 timezoneContainer.classList.remove('active');
-                button.style
+                button.style.display = 'block';
+            } else {
+                timezoneContainer.classList.add('active');
+                button.style.display = 'none';
+            }
+        });
+    </script>
+</body>
+</html>
