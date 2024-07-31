@@ -162,14 +162,14 @@ document.addEventListener('DOMContentLoaded', function () {
         currentEventContainer.innerHTML = '<h2>Current Event</h2>';
 
         if (currentEvents.length > 0) {
-            currentEvents.forEach(event => {
+            currentEvents.forEach((event, index) => {
                 const startTime = moment.tz(event.start, currentTimezone).format('hh:mm A');
                 const endTime = moment.tz(event.end, currentTimezone).format('hh:mm A');
                 currentEventContainer.innerHTML += `
                     <p><strong>Title:</strong> ${event.title || 'No current event'}</p>
                     <p><strong>Description:</strong> ${event.description || 'N/A'}</p>
                     <p><strong>Time:</strong> ${startTime} - ${endTime}</p>
-                    <hr>`;
+                    ${index < currentEvents.length - 1 ? '<hr>' : ''}`;
             });
         } else {
             currentEventContainer.innerHTML += `
