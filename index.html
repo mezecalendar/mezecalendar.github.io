@@ -24,16 +24,23 @@
             color: #fff;
             font-size: 38px;
         }
+        .header-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
     </style>
 </head>
 <body>
     <div id="mainContainer">
-        <div class="header">
+        <div class="header-container">
             <h1>MezeLounge MHF - Event Calendar</h1>
+            <button id="timezoneButton">Select Timezone</button>
         </div>
         <div id="contentContainer">
             <div id="calendarContainer">
-                <button id="timezoneButton">Select Timezone</button>
                 <div id="timezoneContainer">
                     <label for="timezone">Select Timezone:</label>
                     <select id="timezone"></select>
