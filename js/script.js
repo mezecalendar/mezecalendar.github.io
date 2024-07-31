@@ -4,16 +4,14 @@ document.addEventListener('DOMContentLoaded', function () {
 
     let eventList = [];
     let originalEvents = [];
-    let currentEventIndex = 0;
-    let eventsOfTheDay = [];
     let currentTimezone = 'CET';
-    let calendar; // Declare the calendar variable globally
+    let calendar;
 
     async function fetchEvents() {
         const response = await fetch('https://docs.google.com/spreadsheets/d/e/2PACX-1vTdJN88ly1PXVRE_34BdmoBl3loB9FiJWdWTeS8_ZQiGrJc-gIABBw9K0fvv1VwOw9vwnWoInc_eAay/pub?gid=0&single=true&output=csv');
         const text = await response.text();
         const data = Papa.parse(text, { header: true, skipEmptyLines: true }).data;
-    
+
         return data.map(row => ({
             id: row['id'] || row['title'] + row['start'], // Unique identifier
             title: row['title'],
@@ -22,7 +20,7 @@ document.addEventListener('DOMContentLoaded', function () {
             description: row['description']
         }));
     }
-    
+
     function updateEventTimes(events, targetTimezone) {
         return events.map(event => {
             const updatedEvent = { ...event };
@@ -50,7 +48,7 @@ document.addEventListener('DOMContentLoaded', function () {
             maxOptions: null
         });
 
-        timezoneSelect.addEventListener('change', function() {
+        timezoneSelect.addEventListener('change', function () {
             currentTimezone = this.value;
             updateCalendarEvents();
         });
@@ -62,10 +60,47 @@ document.addEventListener('DOMContentLoaded', function () {
         const currentDate = calendar.getDate(); // Get current date
 
         initCalendar(updatedEvents);
-        
+
         calendar.changeView(currentView, currentDate); // Preserve the view and date
         checkCurrentEvent();
         updateUpcomingEvents();
+    }
+
+    function initCalendar(events) {
+        eventList = events.map(event => ({
+            ...event,
+            start: new Date(event.start),
+            end: new Date(event.end)
+        }));
+
+        if (calendar) {
+            calendar.destroy(); // Destroy the previous calendar instance
+        }
+
+        calendar = new FullCalendar.Calendar(calendarEl, {
+            initialView: 'dayGridMonth',
+            headerToolbar: {
+                left: 'prev,next today',
+                center: 'title',
+                right: 'dayGridMonth,listWeek'
+            },
+            events: eventList,
+            allDayText: '',
+            eventClick: function (info) {
+                openModal(info.event);
+            },
+            eventContent: function (arg) {
+                const startTime = moment.tz(arg.event.start, currentTimezone).format('hh:mm A');
+                const endTime = moment.tz(arg.event.end, currentTimezone).format('hh:mm A');
+
+                return {
+                    html: `<div class="fc-event-time">${startTime} - ${endTime}</div>
+                           <div class="fc-event-title" style="background-color: #7030a0; color: #fff; padding: 2px 5px; border-radius: 3px; border: 1px solid #7030a0;">${arg.event.title}</div>`
+                };
+            }
+        });
+
+        calendar.render();
     }
 
     function openModal(event) {
@@ -112,85 +147,33 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
-    function initCalendar(events) {
-        eventList = events.map(event => ({
-            ...event,
-            start: new Date(event.start),
-            end: new Date(event.end)
-        }));
-
-        if (calendar) {
-            calendar.destroy(); // Destroy the previous calendar instance
-        }
-
-        calendar = new FullCalendar.Calendar(calendarEl, {
-            initialView: 'dayGridMonth',
-            headerToolbar: {
-                left: 'prev,next today',
-                center: 'title',
-                right: 'dayGridMonth,listWeek'
-            },
-            events: eventList,
-            allDayText: '',
-            eventClick: function(info) {
-                openModal(info.event);
-            },
-            
-            eventContent: function(arg) {
-                const startTime = moment.tz(arg.event.start, currentTimezone).format('hh:mm A');
-                const endTime = moment.tz(arg.event.end, currentTimezone).format('hh:mm A');
-                
-                if (arg.view.type === 'dayGridMonth') {
-                    return {
-                        html: `<div class="fc-event-title">${arg.event.title}</div>`
-                    };
-                } else if (arg.view.type === 'listWeek') {
-                    const duration = moment(arg.event.end).diff(moment(arg.event.start), 'hours', true);
-                    if (duration > 1) {
-                        return {
-                            html: `<div class="fc-event-time">${startTime} - ${endTime}</div><div class="fc-event-title">${arg.event.title}</div>`,
-                            className: 'merged-event'
-                        };
-                    }
-                    return {
-                        html: `<div class="fc-event-time">${startTime}</div><div class="fc-event-title">${arg.event.title}</div>`
-                    };
-                } else {
-                    return {
-                        html: `<div class="fc-event-time">${startTime}</div><div class="fc-event-title">${arg.event.title}</div>`
-                    };
-                }
-            }
-        });
-
-        calendar.render();
-    }
-
-    function updateCurrentEvent(event) {
-        if (event) {
-            const startTime = moment.tz(event.start, currentTimezone).format('hh:mm A');
-            const endTime = moment.tz(event.end, currentTimezone).format('hh:mm A');
-            document.getElementById('currentEvent').style.display = 'block';
-            document.getElementById('currentEventTitle').innerText = event.title || 'No current event';
-            document.getElementById('currentEventDescription').innerText = `Description: ${event.description || 'N/A'}`;
-            document.getElementById('currentEventTime').innerText = event.start ? `${startTime} - ${endTime}` : 'N/A';
-        } else {
-            document.getElementById('currentEvent').style.display = 'block';
-            document.getElementById('currentEventTitle').innerText = 'No current event';
-            document.getElementById('currentEventDescription').innerText = 'N/A';
-            document.getElementById('currentEventTime').innerText = 'N/A';
-        }
-    }
-
-    function checkCurrentEvent() {
+    function updateCurrentEvents() {
         const now = moment().tz(currentTimezone);
-        const currentEvent = eventList.find(event => {
+        const currentEvents = eventList.filter(event => {
             const eventStart = moment.tz(event.start, currentTimezone);
             const eventEnd = moment.tz(event.end, currentTimezone);
             return eventStart <= now && now < eventEnd;
         });
 
-        updateCurrentEvent(currentEvent);
+        const currentEventContainer = document.getElementById('currentEvent');
+        currentEventContainer.innerHTML = '<h2>Current Event</h2>';
+
+        if (currentEvents.length > 0) {
+            currentEvents.forEach(event => {
+                const startTime = moment.tz(event.start, currentTimezone).format('hh:mm A');
+                const endTime = moment.tz(event.end, currentTimezone).format('hh:mm A');
+                currentEventContainer.innerHTML += `
+                    <p><strong>Title:</strong> ${event.title || 'No current event'}</p>
+                    <p><strong>Description:</strong> ${event.description || 'N/A'}</p>
+                    <p><strong>Time:</strong> ${startTime} - ${endTime}</p>
+                    <hr>`;
+            });
+        } else {
+            currentEventContainer.innerHTML += `
+                <p><strong>Title:</strong> No current event</p>
+                <p><strong>Description:</strong> N/A</p>
+                <p><strong>Time:</strong> N/A</p>`;
+        }
     }
 
     function updateUpcomingEvents() {
@@ -198,8 +181,17 @@ document.addEventListener('DOMContentLoaded', function () {
         const upcomingEvents = eventList.filter(event => moment.tz(event.start, currentTimezone).isAfter(now));
         upcomingEvents.sort((a, b) => moment.tz(a.start, currentTimezone).diff(moment.tz(b.start, currentTimezone)));
 
-        updateUpcomingEventItem(upcomingEvents[0], 1);
-        updateUpcomingEventItem(upcomingEvents[1], 2);
+        updateUpcomingEventItems(upcomingEvents.slice(0, 2)); // Show the first two upcoming events
+    }
+
+    function updateUpcomingEventItems(events) {
+        events.forEach((event, index) => {
+            updateUpcomingEventItem(event, index + 1);
+        });
+        // Clear remaining event slots if there are less than 2 events
+        for (let i = events.length + 1; i <= 2; i++) {
+            updateUpcomingEventItem(null, i);
+        }
     }
 
     function updateUpcomingEventItem(event, index) {
@@ -222,7 +214,7 @@ document.addEventListener('DOMContentLoaded', function () {
             document.getElementById(`upcomingEventCountdown${index}`).innerText = 'N/A';
         }
     }
-    
+
     function updateCountdown(event, index) {
         const now = moment().tz(currentTimezone);
         const eventStart = moment.tz(event.start, currentTimezone);
@@ -242,7 +234,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const updatedEvents = updateEventTimes(events, currentTimezone);
         initCalendar(updatedEvents);
         initTimezoneSelector();
-        checkCurrentEvent();
+        updateCurrentEvents();
         updateUpcomingEvents();
     });
 
@@ -250,6 +242,6 @@ document.addEventListener('DOMContentLoaded', function () {
     window.prevEvent = prevEvent;
     window.nextEvent = nextEvent;
 
-    setInterval(checkCurrentEvent, 60000);
+    setInterval(updateCurrentEvents, 60000);
     setInterval(updateUpcomingEvents, 60000);
 });
