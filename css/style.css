@@ -3,8 +3,6 @@
             margin: 20px;
             height: 100vh;
             box-sizing: border-box;
-            background: url(/img/bg3.jpeg);
-            background-size: cover;
         }
 
         #mainContainer {
