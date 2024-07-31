@@ -1,238 +1,292 @@
-        body {
-            font-family: 'Montserrat', sans-serif;
-            margin: 20px;
-            height: 100vh;
-            box-sizing: border-box;
-        }
+body {
+    font-family: 'Montserrat', sans-serif;
+    margin: 20px;
+    height: 100vh;
+    box-sizing: border-box;
+}
 
-        #mainContainer {
-            width: 100%;
-        }
+#mainContainer {
+    width: 100%;
+}
 
-        .header {
-            text-align: center;
-            margin-bottom: 20px;
-        }
-        
-        #contentContainer {
-            display: flex;
-            justify-content: space-between;
-            width: 100%;
-        }
-        #calendar {
-            background-color: #fff;
-            padding: 20px;
-            border-radius: 15px;
-            margin-bottom: 20px;
-            height: fit-content;
-        }
-        #currentEvent {
-            border-radius: 15px;
-        }
-        #upcomingEvents {
-            border-radius: 15px;
-        }
-        #calendarContainer {
-            flex-grow: 1;
-            margin-right: 20px;
-            width: 700px;
-            box-sizing: border-box;
-        }
-        #timezone {
-            border-radius: 15px;
-        }
-        #timezoneContainer {
-            color: #fff;
-            text-align: center;
-            margin-bottom: 10px;
-            border-radius: 15px;
-            display: none; /* Initially hide the selector */
-        }
+.header {
+    text-align: center;
+    margin-bottom: 20px;
+}
 
-        #timezoneButton {
-            background: #007bff;
-            color: #fff;
-            border: none;
-            font-size: 14px;
-            padding: 10px 20px;
-            border-radius: 5px;
-            cursor: pointer;
-            display: block;
-            margin: 10px auto;
-        }
+#contentContainer {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+}
+#calendar {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 15px;
+    margin-bottom: 20px;
+    height: fit-content;
+}
+#currentEvent {
+    border-radius: 15px;
+}
+#upcomingEvents {
+    border-radius: 15px;
+}
+#calendarContainer {
+    flex-grow: 1;
+    margin-right: 20px;
+    width: 700px;
+    box-sizing: border-box;
+}
+#timezone {
+    border-radius: 15px;
+}
+#timezoneContainer {
+    color: #fff;
+    text-align: center;
+    margin-bottom: 10px;
+    border-radius: 15px;
+    display: none; /* Initially hide the selector */
+}
 
-        #timezoneContainer.active {
-            display: block;
-        }
+#timezoneButton {
+    background: #007bff;
+    color: #fff;
+    border: none;
+    font-size: 14px;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    display: block;
+    margin: 10px auto;
+}
 
-        #currentEventContainer {
-            display: flex;
-            flex-direction: column;
-            width: 300px;
-            box-sizing: border-box;
-        }
+#timezoneContainer.active {
+    display: block;
+}
 
-        @media (max-width: 768px) {
-            #contentContainer {
-                flex-direction: column;
-                align-items: center;
-            }
+#currentEventContainer {
+    display: flex;
+    flex-direction: column;
+    width: 300px;
+    box-sizing: border-box;
+}
 
-            #calendarContainer {
-                width: 100%;
-                margin-right: 0;
-                margin-bottom: 20px;
-            }
+@media (max-width: 768px) {
+    #contentContainer {
+        flex-direction: column;
+        align-items: center;
+    }
 
-            #currentEventContainer {
-                width: 100%;
-            }
+    #calendarContainer {
+        width: 100%;
+        margin-right: 0;
+        margin-bottom: 20px;
+    }
 
-            .fc .fc-view-harness {
-                height: 350px !important;
-            }
+    #currentEventContainer {
+        width: 100%;
+    }
 
-            #currentEventcontainer {
-                width: 100%;
-            }
+    .fc .fc-view-harness {
+        height: 350px !important;
+    }
 
-            #calendarContainer {
-                max-width: 100%;
-            }
+    #currentEventcontainer {
+        width: 100%;
+    }
 
-            body {
-                flex-direction: column;
-            }
+    #calendarContainer {
+        max-width: 100%;
+    }
 
-            .fc-view-container {
-                font-size: 12px;
-            }
+    body {
+        flex-direction: column;
+    }
 
-            .fc .fc-day-header {
-                font-size: 10px;
-            }
+    .fc-view-container {
+        font-size: 12px;
+    }
 
-            .fc .fc-event {
-                font-size: 8px;
-            }
+    .fc .fc-day-header {
+        font-size: 10px;
+    }
 
-            .fc .fc-daygrid-day-number {
-                font-size: 10px;
-            }
+    .fc .fc-event {
+        font-size: 8px;
+    }
 
-            .fc-direction-ltr .fc-toolbar > * > :not(:first-child) {
-                display: none;
-            }
+    .fc .fc-daygrid-day-number {
+        font-size: 10px;
+    }
 
-            .fc .fc-button .fc-icon {
-                margin-right: 5px;
-                font-size: 14px;
-            }
+    .fc-direction-ltr .fc-toolbar > * > :not(:first-child) {
+        display: none;
+    }
 
-            .fc-direction-ltr .fc-button-group > .fc-button:not(:first-child) {
-                margin-left: 5px;
-                font-size: 14px;
-            }
+    .fc .fc-button .fc-icon {
+        margin-right: 5px;
+        font-size: 14px;
+    }
 
-            .fc .fc-toolbar-title {
-                text-align: center;
-                font-size: 18px;
-            }
-            .fc .fc-list-day-cushion, .fc .fc-list-table td {
-                font-size: 12px;
-                padding: 10px;
-            }
-            #currentEvent h2 {
-                text-align: center;
-            }
-            #upcomingEvents h2 {
-                text-align: center;
-            }
-            #upcomingEvents {
-                margin-bottom: 20px;
-            }
-            #currentEventContainer {
-                width: 100% !important;
-            }
+    .fc-direction-ltr .fc-button-group > .fc-button:not(:first-child) {
+        margin-left: 5px;
+        font-size: 14px;
+    }
 
-            .fc .fc-col-header-cell-cushion {
-                font-size: 12px;
-            }
-        }
+    .fc .fc-toolbar-title {
+        text-align: center;
+        font-size: 18px;
+    }
+    .fc .fc-list-day-cushion, .fc .fc-list-table td {
+        font-size: 12px;
+        padding: 10px;
+    }
+    #currentEvent h2 {
+        text-align: center;
+    }
+    #upcomingEvents h2 {
+        text-align: center;
+    }
+    #upcomingEvents {
+        margin-bottom: 20px;
+    }
+    #currentEventContainer {
+        width: 100% !important;
+    }
 
-        .fc-list-event-time {
-            display: none;
-        }
+    .fc .fc-col-header-cell-cushion {
+        font-size: 12px;
+    }
+}
 
-        #eventModal {
-            display: none;
-            position: fixed;
-            z-index: 1000;
-            left: 50%;
-            top: 50%;
-            transform: translate(-50%, -50%);
-            background: white;
-            padding: 20px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
-            width: 300px;
-            box-sizing: border-box;
-        }
+.fc-list-event-time {
+    display: none;
+}
 
-        #eventModal button {
-            margin: 5px;
-        }
+#eventModal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    background: white;
+    padding: 20px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+    width: 300px;
+    box-sizing: border-box;
+}
 
-        #eventModal .close {
-            cursor: pointer;
-            float: right;
-        }
+#eventModal button {
+    margin: 5px;
+}
 
-        #eventDate {
-            text-align: center;
-            font-size: 20px;
-        }
+#eventModal .close {
+    cursor: pointer;
+    float: right;
+}
 
-        #currentEvent {
-            width: 100%;
-            height: 200px;
-            padding: 10px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            background: #fff;
-            box-sizing: border-box;
-            overflow: hidden;
-        }
+#eventDate {
+    text-align: center;
+    font-size: 20px;
+}
 
-        #currentEvent h2 {
-            font-size: 25px;
-            margin-bottom: 10px;
-        }
+#currentEvent {
+    width: 100%;
+    height: 200px;
+    padding: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    background: #fff;
+    box-sizing: border-box;
+    overflow: hidden;
+}
 
-        #currentEvent p {
-            margin: 5px 0;
-            font-size: 0.9em;
-        }
+#currentEvent h2 {
+    font-size: 25px;
+    margin-bottom: 10px;
+}
 
-        #upcomingEvents {
-            width: 100%;
-            padding: 10px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            background: #fff;
-            box-sizing: border-box;
-            margin-top: 20px;
-        }
+#currentEvent p {
+    margin: 5px 0;
+    font-size: 0.9em;
+}
 
-        #upcomingEvents h2 {
-            font-size: 25px;
-            margin-bottom: 10px;
-        }
+#upcomingEvents {
+    width: 100%;
+    padding: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    background: #fff;
+    box-sizing: border-box;
+    margin-top: 20px;
+}
 
-        .upcomingEventItem {
-            margin-bottom: 10px;
-        }
+#upcomingEvents h2 {
+    font-size: 25px;
+    margin-bottom: 10px;
+}
 
-        .fc-event-title {
-            white-space: normal;
-            word-wrap: break-word;
-            display: inline-block;
-            max-width: 100%;
-        }
+.upcomingEventItem {
+    margin-bottom: 10px;
+}
+
+.fc-event-title {
+    white-space: normal;
+    word-wrap: break-word;
+    display: inline-block;
+    max-width: 100%;
+}
+
+/* Style for the day headers (Sun, Mon, Tue, etc.) */
+.fc .fc-col-header-cell-cushion {
+    background-color: #7030a0;
+    color: #fff;
+}
+
+/* Style for the Month button */
+.fc-toolbar-chunk .fc-button-group .fc-button.fc-button-primary {
+    background-color: #7030a0;
+    color: #fff;
+}
+
+.fc-toolbar-chunk .fc-button-group .fc-button {
+    background-color: #fff;
+    color: #7030a0;
+}
+
+/* Style for the Today button */
+.fc-toolbar-chunk .fc-today-button {
+    background-color: #7030a0;
+    color: #fff;
+}
+
+/* Style for the navigation buttons */
+.fc-toolbar-chunk .fc-button-group .fc-prev-button,
+.fc-toolbar-chunk .fc-button-group .fc-next-button {
+    background-color: #7030a0;
+    color: #fff;
+}
+
+.fc-toolbar-chunk .fc-button-group .fc-prev-button:focus,
+.fc-toolbar-chunk .fc-button-group .fc-next-button:focus {
+    background-color: #7030a0;
+    color: #fff;
+}
+
+.fc-toolbar-chunk .fc-button-group .fc-prev-button:hover,
+.fc-toolbar-chunk .fc-button-group .fc-next-button:hover {
+    background-color: #7030a0;
+    color: #fff;
+}
+
+.fc-toolbar-chunk .fc-button-group .fc-prev-button:disabled,
+.fc-toolbar-chunk .fc-button-group .fc-next-button:disabled {
+    background-color: #7030a0;
+    color: #fff;
+}
+
+/* Style for the < > navigation symbols */
+.fc-toolbar-chunk .fc-button-group .fc-prev-button::before,
+.fc-toolbar-chunk .fc-button-group .fc-next-button::before {
+    color: #fff;
+}
