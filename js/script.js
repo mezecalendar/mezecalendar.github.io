@@ -107,15 +107,45 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function openModal(event) {
         if (event && event.start && event.end) {
-            const startTime = moment.tz(event.start, currentTimezone).format('hh:mm A');
-            const endTime = moment.tz(event.end, currentTimezone).format('hh:mm A');
-            document.getElementById('infoModalLabel').innerText = event.title || 'No Title';
-            document.getElementById('modalDescription').innerText = event.description || 'No Description';
-            document.getElementById('modalTime').innerText = `Time: ${startTime} - ${endTime}`;
-            const infoModal = new bootstrap.Modal(document.getElementById('infoModal'));
-            infoModal.show();
+            const eventDate = moment.tz(event.start, currentTimezone).format('YYYY-MM-DD');
+            eventsOfTheDay = eventList.filter(e => moment.tz(e.start, currentTimezone).format('YYYY-MM-DD') === eventDate);
+            currentEventIndex = eventsOfTheDay.findIndex(e => e.id === event.id);
+
+            updateModalContent(eventsOfTheDay[currentEventIndex]);
+            document.getElementById('eventModal').style.display = 'block';
         } else {
             console.error('Invalid event object:', event);
+        }
+    }
+
+    function closeModal() {
+        document.getElementById('eventModal').style.display = 'none';
+    }
+
+    function prevEvent() {
+        currentEventIndex = (currentEventIndex - 1 + eventsOfTheDay.length) % eventsOfTheDay.length;
+        updateModalContent(eventsOfTheDay[currentEventIndex]);
+    }
+
+    function nextEvent() {
+        currentEventIndex = (currentEventIndex + 1) % eventsOfTheDay.length;
+        updateModalContent(eventsOfTheDay[currentEventIndex]);
+    }
+
+    function updateModalContent(event) {
+        if (event && event.start && event.end) {
+            const startTime = moment.tz(event.start, currentTimezone).format('hh:mm A');
+            const endTime = moment.tz(event.end, currentTimezone).format('hh:mm A');
+            document.getElementById('eventDate').innerText = `Events on ${moment.tz(event.start, currentTimezone).format('YYYY-MM-DD')}`;
+            document.getElementById('modalTitle').innerText = event.title || 'No Title';
+            document.getElementById('modalDescription').innerText = `Description: ${event.description || 'No Description'}`;
+            document.getElementById('modalTime').innerText = `Time: ${startTime} - ${endTime}`;
+        } else {
+            console.error('Invalid event object:', event);
+            document.getElementById('eventDate').innerText = 'No Event';
+            document.getElementById('modalTitle').innerText = 'No Title';
+            document.getElementById('modalDescription').innerText = 'No Description';
+            document.getElementById('modalTime').innerText = 'No Time';
         }
     }
 
@@ -208,6 +238,10 @@ document.addEventListener('DOMContentLoaded', function () {
         updateCurrentEvents();
         updateUpcomingEvents();
     });
+
+    window.closeModal = closeModal;
+    window.prevEvent = prevEvent;
+    window.nextEvent = nextEvent;
 
     setInterval(updateCurrentEvents, 60000);
     setInterval(updateUpcomingEvents, 60000);
