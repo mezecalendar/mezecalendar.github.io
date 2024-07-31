@@ -83,17 +83,6 @@
             margin-bottom: 20px;
         }
     </style>
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const timezoneButton = document.getElementById('timezoneButton');
-            const timezoneContainer = document.getElementById('timezoneContainer');
-
-            timezoneButton.addEventListener('click', function() {
-                timezoneContainer.classList.toggle('active');
-                timezoneButton.style.display = timezoneContainer.classList.contains('active') ? 'none' : 'block';
-            });
-        });
-    </script>
 </head>
 <body>
     <div id="mainContainer">
@@ -144,19 +133,5 @@
         <button onclick="prevEvent()">Previous</button>
         <button onclick="nextEvent()">Next</button>
     </div>
-    <script>
-        document.getElementById('timezoneButton').addEventListener('click', function() {
-            var timezoneContainer = document.getElementById('timezoneContainer');
-            var button = document.getElementById('timezoneButton');
-
-            if (timezoneContainer.classList.contains('active')) {
-                timezoneContainer.classList.remove('active');
-                button.style.display = 'block';
-            } else {
-                timezoneContainer.classList.add('active');
-                button.style.display = 'none';
-            }
-        });
-    </script>
 </body>
 </html>
