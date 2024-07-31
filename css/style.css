@@ -243,19 +243,30 @@ body {
     color: #fff;
 }
 
-/* Style for the Month button */
-.fc-toolbar-chunk .fc-button-group .fc-button.fc-button-primary {
+/* Style for the Month and List buttons */
+.fc-toolbar-chunk .fc-button-group .fc-button {
+    background-color: #fff;
+    color: #7030a0;
+}
+
+.fc-toolbar-chunk .fc-button-group .fc-button.fc-button-primary,
+.fc-toolbar-chunk .fc-button-group .fc-button.fc-button-active {
     background-color: #7030a0;
     color: #fff;
 }
 
-.fc-toolbar-chunk .fc-button-group .fc-button {
+.fc-toolbar-chunk .fc-button-group .fc-button:not(.fc-button-primary):not(.fc-button-active) {
     background-color: #fff;
     color: #7030a0;
 }
 
 /* Style for the Today button */
 .fc-toolbar-chunk .fc-today-button {
+    background-color: #fff;
+    color: #7030a0;
+}
+
+.fc-toolbar-chunk .fc-today-button.fc-button-primary {
     background-color: #7030a0;
     color: #fff;
 }
