@@ -134,11 +134,14 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function updateModalContent(event) {
         if (event && event.start && event.end) {
+            const startDate = moment.tz(event.start, currentTimezone).format('DD-MM-YYYY');
+            const endDate = moment.tz(event.end, currentTimezone).format('DD-MM-YYYY');
             const startTime = moment.tz(event.start, currentTimezone).format('hh:mm A');
             const endTime = moment.tz(event.end, currentTimezone).format('hh:mm A');
             document.getElementById('eventDate').innerText = `Events on ${moment.tz(event.start, currentTimezone).format('YYYY-MM-DD')}`;
             document.getElementById('modalTitle').innerText = event.title || 'No Title';
             document.getElementById('modalDescription').innerText = `Description: ${event.description || 'No Description'}`;
+            document.getElementById('modalDate').innerText = `Date: ${startDate} - ${endDate}`;
             document.getElementById('modalTime').innerText = `Time: ${startTime} - ${endTime}`;
         } else {
             console.error('Invalid event object:', event);
@@ -156,66 +159,94 @@ document.addEventListener('DOMContentLoaded', function () {
             const eventEnd = moment.tz(event.end, currentTimezone);
             return eventStart <= now && now < eventEnd;
         });
-
+    
         const currentEventContainer = document.getElementById('currentEvent');
         currentEventContainer.innerHTML = '<h2>Current Event</h2>';
-
+    
         if (currentEvents.length > 0) {
             currentEvents.forEach((event, index) => {
+                const startDate = moment.tz(event.start, currentTimezone).format('DD-MM-YYYY');
+                const endDate = moment.tz(event.end, currentTimezone).format('DD-MM-YYYY');
                 const startTime = moment.tz(event.start, currentTimezone).format('hh:mm A');
                 const endTime = moment.tz(event.end, currentTimezone).format('hh:mm A');
                 currentEventContainer.innerHTML += `
                     <p><strong>Title:</strong> ${event.title || 'No current event'}</p>
                     <p><strong>Description:</strong> ${event.description || 'N/A'}</p>
+                    <p><strong>Date:</strong> ${startDate} - ${endDate}</p>
                     <p><strong>Time:</strong> ${startTime} - ${endTime}</p>
+                    <p><strong>Ends in:</strong> <span id="currentEventEndsIn${index}"></span></p>
                     ${index < currentEvents.length - 1 ? '<hr>' : ''}`;
+                
+                updateCurrentEventCountdown(event, index);
             });
         } else {
             currentEventContainer.innerHTML += `
                 <p><strong>Title:</strong> No current event</p>
                 <p><strong>Description:</strong> N/A</p>
-                <p><strong>Time:</strong> N/A</p>`;
+                <p><strong>Date:</strong> N/A</p>
+                <p><strong>Time:</strong> N/A</p>
+                <p><strong>Ends in:</strong> N/A</p>`;
         }
     }
-
+    
+    function updateCurrentEventCountdown(event, index) {
+        const now = moment().tz(currentTimezone);
+        const eventEnd = moment.tz(event.end, currentTimezone);
+        const duration = moment.duration(eventEnd.diff(now));
+    
+        const hours = Math.floor(duration.asHours());
+        const minutes = Math.floor(duration.minutes());
+        const seconds = Math.floor(duration.seconds());
+    
+        document.getElementById(`currentEventEndsIn${index}`).innerText = `${hours}h ${minutes}m ${seconds}s`;
+    
+        if (duration.asSeconds() > 0) {
+            setTimeout(() => updateCurrentEventCountdown(event, index), 1000);
+        }
+    }
+    
     function updateUpcomingEvents() {
         const now = moment().tz(currentTimezone);
         const upcomingEvents = eventList.filter(event => moment.tz(event.start, currentTimezone).isAfter(now));
         upcomingEvents.sort((a, b) => moment.tz(a.start, currentTimezone).diff(moment.tz(b.start, currentTimezone)));
-
+    
+        console.log('Upcoming events:', upcomingEvents); // Debug log
+    
         updateUpcomingEventItems(upcomingEvents.slice(0, 2));
     }
-
+    
     function updateUpcomingEventItems(events) {
-        events.forEach((event, index) => {
-            updateUpcomingEventItem(event, index + 1);
-        });
-        for (let i = events.length + 1; i <= 2; i++) {
-            updateUpcomingEventItem(null, i);
+        console.log('Updating upcoming event items:', events); // Debug log
+    
+        for (let i = 1; i <= 2; i++) {
+            const event = events[i - 1];
+            updateUpcomingEventItem(event, i);
         }
     }
-
+    
     function updateUpcomingEventItem(event, index) {
+        console.log(`Updating upcoming event item ${index}:`, event); // Debug log
+    
         if (event) {
-            const startDateTime = moment.tz(event.start, currentTimezone).format('YYYY-MM-DD');
+            const startDateTime = moment.tz(event.start, currentTimezone).format('DD-MM-YYYY');
+            const endDateTime = moment.tz(event.end, currentTimezone).format('DD-MM-YYYY');
             const startTime = moment.tz(event.start, currentTimezone).format('hh:mm A');
             const endTime = moment.tz(event.end, currentTimezone).format('hh:mm A');
- 
+     
             updateCountdown(event, index);
- 
-            document.getElementById(`upcomingEventTitle${index}`).innerText = event.title || 'No upcoming event';
-            document.getElementById(`upcomingEventDescription${index}`).innerText = ` ${event.description || 'N/A'}`;
-            document.getElementById(`upcomingEventTime${index}`).innerText = ` ${startTime} - ${endTime}`;
-            document.getElementById(`upcomingEventDate${index}`).innerText = ` ${startDateTime}`;
+     
+            document.getElementById(`upcomingEventTitle${index}`).textContent = event.title || 'No upcoming event';
+            document.getElementById(`upcomingEventDescription${index}`).textContent = event.description || 'N/A';
+            document.getElementById(`upcomingEventTime${index}`).textContent = `${startTime} - ${endTime}`;
+            document.getElementById(`upcomingEventDate${index}`).textContent = `${startDateTime} - ${endDateTime}`;
         } else {
-            document.getElementById(`upcomingEventTitle${index}`).innerText = 'No upcoming event';
-            document.getElementById(`upcomingEventDescription${index}`).innerText = 'N/A';
-            document.getElementById(`upcomingEventTime${index}`).innerText = 'N/A';
-            document.getElementById(`upcomingEventDate${index}`).innerText = 'N/A';
-            document.getElementById(`upcomingEventCountdown${index}`).innerText = 'N/A';
+            document.getElementById(`upcomingEventTitle${index}`).textContent = 'No upcoming event';
+            document.getElementById(`upcomingEventDescription${index}`).textContent = 'N/A';
+            document.getElementById(`upcomingEventTime${index}`).textContent = 'N/A';
+            document.getElementById(`upcomingEventDate${index}`).textContent = 'N/A';
+            document.getElementById(`upcomingEventCountdown${index}`).textContent = 'N/A';
         }
     }
-
     function updateCountdown(event, index) {
         const now = moment().tz(currentTimezone);
         const eventStart = moment.tz(event.start, currentTimezone);
